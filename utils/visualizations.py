@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import torch.nn.functional as F
 
 def visualize_inference(model, dataloader, device, reversed_mapping, num_samples=4):
     model.eval()
@@ -16,7 +17,16 @@ def visualize_inference(model, dataloader, device, reversed_mapping, num_samples
         for batch_images, batch_masks in dataloader:
             batch_images = batch_images.to(device)
             outputs = model(batch_images)
-            batch_predictions = outputs.argmax(dim=1)
+
+            if type(model).__name__ == 'SegformerForSemanticSegmentation':
+                logits = outputs.logits
+                logits = F.interpolate(logits, size=batch_masks.shape[-2:], mode='bilinear', align_corners=False)
+                batch_predictions = logits.argmax(dim=1)
+            elif type(model).__name__ == 'DeepLabV3':
+                logits = outputs['out']
+                batch_predictions = logits.argmax(dim=1)
+            else:
+                batch_predictions = outputs.argmax(dim=1)
 
             all_images.append(batch_images.cpu())
             all_masks.append(batch_masks)
