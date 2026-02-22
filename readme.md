@@ -12,6 +12,10 @@ The work was split into three parts. The first one involved building an EDA pipe
 
 ## Results
 
+![U-Net Example: Dataset and Prediction](unet_example.jpeg)
+
+*Example of U-Net predictions on the UAVid dataset, produced by the model trained during this project.*
+
 As a result, I put together an EDA notebook, implemented a Fully Convolutional Network (FCN) based on AlexNet and U-Net as the most influential architectures for this task. For SOTA models, I selected DeepLabV3 and SegFormer. Explainability was built for U-Net and SegFormer using GradCAM and Vanilla Gradients as the chosen explanation methods.
 
 Train notebooks contain a full training pipeline with the `ray-tune` framework for hyperparameter optimization. Training loops are created from scratch and are similar from notebook to notebook. U-Net and AlexNet FCN are inside the `/models` folder, and a custom pixel-wise weighted focal loss is inside `/losses`. Explanation pipelines contain each method for each selected network and include visualizations of different layers and how the network "sees" different objects.
